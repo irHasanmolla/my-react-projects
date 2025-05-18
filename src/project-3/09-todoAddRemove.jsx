@@ -1,100 +1,79 @@
-import React, {useState} from 'react'
+import { useState } from "react";
 
 const TodoAddRemove = () => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState('');
-  const [editId, setEditId] = useState(null);
-  const [editText, setEditText] = useState('');
-  const [filter, setFilter] = useState('all');
+  const [updateId, setUpdateId] = useState(null);
+  const [updateText, setUpdateText] = useState('');
 
-  const handleAddTask = () => {
-    if (task.trim() !== ''){
-      setTasks([...tasks, {text: task, id: Date.now(), completed: false}]);
-      setTask('');
+  const handleClick = () => {
+    if (task.trim() !== '') {
+      setTasks([...tasks, {text: task, id: Date.now()}]);
     }
+    setTask('');
   }
 
   const handleRemove = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    setTasks(tasks.filter((t)=>t.id !== id));
   }
-  const handleEdit = (id, text) => {
-    setEditId(id);
-    setEditText(text);
+
+  const updateInfo = (id, text) => {
+    setUpdateId(id);
+    setUpdateText(text);
   }
+
   const handleSave = (id) => {
-    setTasks(tasks.map((task) => (
-      task.id === id 
-      ? {...task, text: editText} 
-      : task
-    )))
-    setTask('');
-    setEditId(null);
-  }
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === 'active') return !task.completed;
-    if (filter === 'completed') return task.completed;
-    return true;
-  })
-  const ToggleClick = (id) => {
-    setTasks(tasks.map((task) => (
-      task.id === id 
-      ? {...task, completed: !task.completed} 
-      : task
-    )))
+    setTasks(tasks.map((t)=>(
+      t.id === id
+      ? {...t, text: updateText}
+      : t
+    )));
+    setUpdateText('')
+    setUpdateId(null)
   }
 
   return (
-    <div className="content">
-      <h1>Todo App:</h1>
+    <div>
+      <h1>To-Do List</h1>
       <input 
         type="text" 
-        placeholder='Add a new task...'
+        placeholder="Write Task Here"
         value={task}
-        onChange={(e) => setTask(e.target.value)}
+        onChange={e=>setTask(e.target.value)}
       />
-      <button onClick={() => handleAddTask()}>Add Task</button>
-
-      <div>
-        <button onClick={()=>setFilter('all')}>All</button>
-        <button onClick={()=>setFilter('active')}>Active</button>
-        <button onClick={()=>setFilter('completed')}>Completed</button>
-      </div>
+      <button onClick={()=>handleClick()}>Add Text</button>
 
       <ul>
-          {filteredTasks.length === 0
-          ? <p>No Task Found</p>
-          :
-          filteredTasks.map((t) => (
-            <li key={t.id}>
-            {editId === t.id 
+        {tasks.map((t)=>(
+
+          <li key={t.id}>
+            {updateId === t.id 
             ? (
-                <>
-                  <input 
-                    type="text" 
-                    value={editText}
-                    onChange={(e) => setEditText(e.target.value)}
-                  />
-                  <button onClick={()=>handleSave(t.id)}>Save</button>
-                  <button onClick={()=>setEditId(null)}>Cancel</button>
-                </>
-              )
+              <>
+              <input 
+                type="text" 
+                value={updateText}
+                onChange={e=>setUpdateText(e.target.value)}
+              />
+              <button onClick={()=>handleSave(t.id)}>Save</button>
+              <button onClick={()=>setUpdateId(null)}>Cancel</button>
+              </>
+            )
             : (
               <>
-                  <span 
-                    onClick={() => ToggleClick(t.id)} 
-                    style={{textDecoration: t.completed 
-                      ? 'line-through' 
-                      : 'none'}}>
-                    {t.text}
-                  </span>
-                  <button onClick={() => handleEdit(t.id, t.text)}>Edit</button>
+                {t.text}
+                <button onClick={()=>updateInfo(t.id, t.text)}>Edit</button>
               </>
-              )}
-              <button onClick={() => handleRemove(t.id)}>Remove</button>
-            </li>
-          ))}
+            )
+            }
+            <button onClick={()=>handleRemove(t.id)}>Remove</button>
+          </li>
+        ))}
       </ul>
+
+
     </div>
+    
   )
 }
 
