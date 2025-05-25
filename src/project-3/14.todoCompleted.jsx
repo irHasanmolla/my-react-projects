@@ -55,7 +55,7 @@ export default function TodoCompleted() {
       task.id === id
       ? {...task, completed: !task.completed}
       : task
-    )))
+    )));
   }
 
   return (
@@ -73,6 +73,7 @@ export default function TodoCompleted() {
         <button onClick={()=>{setFilter('all')}}>All</button>
         <button onClick={()=>{setFilter('active')}}>Active</button>
         <button onClick={()=>{setFilter('completed')}}>Completed</button>
+        <button>Extra</button>
       </div>
 
       <ul>
