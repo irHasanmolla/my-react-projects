@@ -1,80 +1,75 @@
-import { useState } from "react";
+import { useState } from 'react'
 
-const TodoAddRemove = () => {
+const TodoAppPractice = () => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState('');
-  const [updateId, setUpdateId] = useState(null);
-  const [updateText, setUpdateText] = useState('');
+  const [textFilter, setTextFilter] = useState('');
+  const [idFilter, setIdFilter] = useState(null);
 
-  const handleClick = () => {
+  const handleAddTask = () =>{
     if (task.trim() !== '') {
       setTasks([...tasks, {text: task, id: Date.now()}]);
     }
     setTask('');
   }
 
-  const handleRemove = (id) => {
-    setTasks(tasks.filter((t)=>t.id !== id));
-  }
-
-  const updateInfo = (id, text) => {
-    setUpdateId(id);
-    setUpdateText(text);
+  const handleEdit = (id, text) => {
+    setTextFilter(text);
+    setIdFilter(id);
   }
 
   const handleSave = (id) => {
+
     setTasks(tasks.map((t)=>(
       t.id === id
-      ? {...t, text: updateText}
+      ? {...t, text: textFilter}
       : t
-    )));
-    setUpdateText('')
-    setUpdateId(null)
+    )))
+    setTextFilter('')
+    setIdFilter(null)
   }
 
   return (
     <div>
-      <h1>To-Do List</h1>
+      <h1>Todo App</h1>
       <input 
         type="text" 
-        placeholder="Write Task Here"
         value={task}
-        onChange={e=>setTask(e.target.value)}
+        placeholder='Add your Task here'
+        onChange={(e)=>setTask(e.target.value)}
       />
-      <button onClick={()=>handleClick()}>Add Text</button>
+      <button onClick={handleAddTask}>Add Task</button>
 
       <ul>
         {tasks.map((t)=>(
-
           <li key={t.id}>
-            {updateId === t.id 
-            ? (
+            {idFilter === t.id
+            ?
+            (
               <>
               <input 
                 type="text" 
-                value={updateText}
-                onChange={e=>setUpdateText(e.target.value)}
-              />
+                value={textFilter}
+                onChange={(e)=>setTextFilter(e.target.value)}
+                />
               <button onClick={()=>handleSave(t.id)}>Save</button>
-              <button onClick={()=>setUpdateId(null)}>Cancel</button>
+              <button onClick={()=>setIdFilter(null)}>Cancel</button>
               </>
             )
-            : (
+            :
+            (
               <>
                 {t.text}
-                <button onClick={()=>updateInfo(t.id, t.text)}>Edit</button>
+                <button onClick={()=>handleEdit(t.id, t.text)}>Edit</button>
               </>
             )
             }
-            <button onClick={()=>handleRemove(t.id)}>Remove</button>
+            <button onClick={() =>setTasks(tasks.filter((task)=>task.id !== t.id))}>Remove</button>
           </li>
         ))}
       </ul>
-
-
     </div>
-    
   )
 }
 
-export default TodoAddRemove;
+export default TodoAppPractice
